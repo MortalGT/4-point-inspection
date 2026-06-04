@@ -27,31 +27,33 @@ sap.ui.define([
                 { key: "finishing", text: "Finishing" }
             ];
 
+            var aDemoDefects = [
+                { name: "Light Repeat line" },
+                { name: "Heavy Repeat line" },
+                { name: "Yarn pulling" },
+                { name: "Heavy yarn pulling" },
+                { name: "Neps / Kapus / Yarn Knots" },
+                { name: "Boing" },
+                { name: "Moyar" },
+                { name: "Light Carbonize" },
+                { name: "Heavy Carbonize" },
+                { name: "Fold mark dagi" },
+                { name: "Pin out" },
+                { name: "Stenter Stoppage" },
+                { name: "Dagi" },
+                { name: "Boarder side patta" },
+                { name: "Wrong cutting" },
+                { name: "Kniting Chira" },
+                { name: "Light needle line" },
+                { name: "Heavy needle line" },
+                { name: "Light rupture" },
+                { name: "Heavy Rupture" }
+            ];
+
             var oDefectsMap = {
-                "weaving": [
-                    { name: "Broken Pick" },
-                    { name: "Double Pick" },
-                    { name: "Weft Loop" },
-                    { name: "Misdraw" },
-                    { name: "Slub" },
-                    { name: "Hole" }
-                ],
-                "dyeing": [
-                    { name: "Color Shade" },
-                    { name: "Dye Spot" },
-                    { name: "Uneven Dyeing" },
-                    { name: "Bleach Spot" },
-                    { name: "Streaks" },
-                    { name: "Patchiness" }
-                ],
-                "finishing": [
-                    { name: "Crease Mark" },
-                    { name: "Skewness" },
-                    { name: "Stains" },
-                    { name: "Torn Edge" },
-                    { name: "Calender Mark" },
-                    { name: "Width Variation" }
-                ]
+                "weaving": aDemoDefects,
+                "dyeing": aDemoDefects,
+                "finishing": aDemoDefects
             };
 
             // Operator mapping based on PO

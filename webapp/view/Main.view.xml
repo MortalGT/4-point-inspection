@@ -78,7 +78,7 @@
                 </Panel>
 
                 <Panel headerText="Defect Quick-Capture (Click button to record)" class="customPanel sapUiTinyMarginBottom">
-                    <l:Grid defaultSpan="XL6 L6 M6 S12" content="{/currentDefects}" class="sapUiTinyMarginTop">
+                    <l:Grid defaultSpan="XL3 L3 M4 S12" content="{/currentDefects}" class="sapUiTinyMarginTop">
                         <Button text="{name}"
                                 press=".onDefectClick"
                                 type="Default"

@@ -48,6 +48,13 @@
                                    placeholder="Operator Name (Auto Fill)"
                                    width="100%" />
 
+                            <Label text="Lot Number" design="Bold" />
+                            <Input id="lotNumberInput"
+                                   value="{/selection/lotNumber}"
+                                   editable="false"
+                                   placeholder="Lot Number (Auto Fill)"
+                                   width="100%" />
+
                             <core:Title text="Process &amp; Measurement" />
                             <Label text="Process" design="Bold" />
                             <Select id="processSelect"
@@ -66,16 +73,6 @@
                                    class="yellowHighlight"
                                    submit=".onMeterReadingSubmit"
                                    width="100%" />
-
-                            <Label text="Defect Points" design="Bold" />
-                            <SegmentedButton selectedKey="{/selection/points}">
-                                <items>
-                                    <SegmentedButtonItem key="1" text="1 Pt" />
-                                    <SegmentedButtonItem key="2" text="2 Pt" />
-                                    <SegmentedButtonItem key="3" text="3 Pt" />
-                                    <SegmentedButtonItem key="4" text="4 Pt" />
-                                </items>
-                            </SegmentedButton>
                         </f:content>
                     </f:SimpleForm>
                 </Panel>
@@ -97,9 +94,6 @@
                         </Column>
                         <Column width="120px" hAlign="End">
                             <Text text="Meter Reading" />
-                        </Column>
-                        <Column width="100px" hAlign="Center">
-                            <Text text="Points" />
                         </Column>
                         <Column>
                             <Text text="Production Order" />
@@ -125,7 +119,6 @@
                             <cells>
                                 <ObjectIdentifier title="{defectName}" />
                                 <Text text="{meterReading} m" />
-                                <ObjectStatus text="{points} Pt" state="{= ${points} === '1' ? 'Success' : (${points} === '2' ? 'None' : (${points} === '3' ? 'Warning' : 'Error')) }" class="pointsTag" />
                                 <Text text="{productionOrder}" />
                                 <Text text="{operation}" />
                                 <Text text="{process}" />

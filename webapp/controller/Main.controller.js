@@ -1,8 +1,9 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
-    "sap/m/MessageToast"
-], function (Controller, JSONModel, MessageToast) {
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
+], function (Controller, JSONModel, MessageToast, MessageBox) {
     "use strict";
 
     return Controller.extend("mickey.controller.Main", {
@@ -60,6 +61,13 @@ sap.ui.define([
                 "PO-2026-003": "Charlie Davis (Quality Lead)"
             };
 
+            // Lot mapping based on PO
+            this._oLotMap = {
+                "PO-2026-001": "LOT-99201",
+                "PO-2026-002": "LOT-88102",
+                "PO-2026-003": "LOT-77303"
+            };
+
             var oModel = new JSONModel({
                 productionOrders: aProductionOrders,
                 operations: aOperations,
@@ -70,9 +78,9 @@ sap.ui.define([
                     productionOrder: "",
                     operation: "",
                     operator: "",
+                    lotNumber: "",
                     process: "weaving",
-                    meterReading: "",
-                    points: "1"
+                    meterReading: ""
                 }
             });
 
@@ -100,6 +108,9 @@ sap.ui.define([
             
             var sOperator = this._oOperatorMap[sKey] || "";
             oModel.setProperty("/selection/operator", sOperator);
+
+            var sLot = this._oLotMap[sKey] || "";
+            oModel.setProperty("/selection/lotNumber", sLot);
         },
 
         onMeterReadingSubmit: function (oEvent) {
@@ -145,11 +156,11 @@ sap.ui.define([
             aCaptured.push({
                 defectName: sDefectName,
                 meterReading: fMeter.toFixed(2),
-                points: oSelection.points,
                 productionOrder: oSelection.productionOrder,
                 operation: oSelection.operation,
                 process: oSelection.process,
                 operator: oSelection.operator || "N/A",
+                lotNumber: oSelection.lotNumber || "N/A",
                 timestamp: new Date().toLocaleTimeString()
             });
 
@@ -184,9 +195,22 @@ sap.ui.define([
                 return;
             }
 
-            MessageToast.show("Successfully submitted " + aCaptured.length + " defect logs to SAP!");
+            // Generate random 10-digit numbers
+            var sDocNum = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+            var sBatchNum = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+
+            var sMessage = "Document number " + sDocNum + " has been posted.\n\nBatch " + sBatchNum + " has been created.";
+
+            MessageBox.success(sMessage, {
+                title: "Inspection Submitted"
+            });
+
             oModel.setProperty("/capturedDefects", []);
             oModel.setProperty("/selection/meterReading", "");
+            oModel.setProperty("/selection/lotNumber", "");
+            oModel.setProperty("/selection/operator", "");
+            oModel.setProperty("/selection/productionOrder", "");
+            oModel.setProperty("/selection/operation", "");
         }
     });
 });

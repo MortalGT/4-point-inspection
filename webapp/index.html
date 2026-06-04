@@ -1,0 +1,278 @@
+<html>
+    <head>
+        <title>4-Point Fabric Defect Capturing</title>
+        <!-- Code to load/initialize SAPUI5 framework when we start our app -->
+        <script src="https://ui5.sap.com/resources/sap-ui-core.js"
+                data-sap-ui-libs="sap.m"
+                data-sap-ui-theme="sap_horizon"
+                data-sap-ui-bindingSyntax="complex"
+                data-sap-ui-resourceroots='{
+                    "mickey": "./"
+                }'
+        ></script>
+
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+        <style>
+            /* Apply custom typography */
+            body, .sapUiBody, .sapMText, .sapMLabel, .sapMTitle, .sapMInputBaseInner, .sapMBtnContent {
+                font-family: 'Outfit', sans-serif !important;
+            }
+
+            /* Main Page background - Aurora Gradient Effect */
+            body.sapUiBody {
+                background-color: #f8fafc !important;
+                background-image: 
+                    radial-gradient(at 0% 0%, rgba(219, 234, 254, 0.7) 0px, transparent 50%),
+                    radial-gradient(at 100% 0%, rgba(224, 231, 255, 0.7) 0px, transparent 50%),
+                    radial-gradient(at 50% 100%, rgba(241, 245, 249, 0.9) 0px, transparent 80%) !important;
+                background-attachment: fixed !important;
+            }
+
+            /* Custom Panel glassmorphic look */
+            .customPanel {
+                background: rgba(255, 255, 255, 0.75) !important;
+                backdrop-filter: blur(16px) !important;
+                -webkit-backdrop-filter: blur(16px) !important;
+                border: 1px solid rgba(255, 255, 255, 0.8) !important;
+                box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05), 0 1px 1px rgba(0, 0, 0, 0.02) !important;
+                border-radius: 12px !important;
+                overflow: hidden !important;
+            }
+
+            .customPanel .sapMPanelHdr {
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+                font-weight: 700 !important;
+                color: #4f46e5 !important; /* Premium Indigo */
+                font-size: 1.1rem !important;
+                height: 2.5rem !important;
+                line-height: 2.5rem !important;
+                padding-left: 1rem !important;
+            }
+
+            .customPanel .sapMPanelContent {
+                padding: 16px !important;
+            }
+
+            /* Make SimpleForm elements more compact */
+            .customPanel .sapUiFormResGrid {
+                padding: 0 !important;
+            }
+
+            .customPanel .sapUiFormElementLbl {
+                padding-top: 0.35rem !important;
+            }
+
+            /* Yellow highlighted styling for Meter Reading input */
+            .yellowHighlight .sapMInputBaseInner {
+                background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%) !important; /* soft yellow gradient */
+                border: 2px solid #eab308 !important;     /* yellow-500 border */
+                color: #854d0e !important;            /* dark yellow text */
+                font-weight: 700 !important;
+                font-size: 1.1rem !important;
+                border-radius: 8px !important;
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 10px rgba(250, 204, 21, 0.1) !important;
+                transition: all 0.2s ease !important;
+            }
+            .yellowHighlight .sapMInputBaseInner:focus {
+                background: #fef9c3 !important; /* brighter yellow when focused */
+                border-color: #ca8a04 !important;
+                box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), 0 0 0 4px rgba(234, 179, 8, 0.3) !important;
+            }
+
+            /* Segmented Button custom look and color-coded points */
+            .sapMSegB {
+                border-radius: 8px !important;
+                overflow: hidden !important;
+                border: 1px solid rgba(226, 232, 240, 0.8) !important;
+            }
+            .sapMSegBBtn {
+                background: #ffffff !important;
+                font-weight: 600 !important;
+                transition: all 0.2s ease !important;
+            }
+            /* 1 Pt - Success (Green) */
+            .sapMSegBBtn:nth-child(1).sapMSegBBtnSel {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+                color: #ffffff !important;
+                border-color: transparent !important;
+            }
+            /* 2 Pt - Info/Yellow (Amber) */
+            .sapMSegBBtn:nth-child(2).sapMSegBBtnSel {
+                background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+                color: #ffffff !important;
+                border-color: transparent !important;
+            }
+            /* 3 Pt - Warning (Orange) */
+            .sapMSegBBtn:nth-child(3).sapMSegBBtnSel {
+                background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+                color: #ffffff !important;
+                border-color: transparent !important;
+            }
+            /* 4 Pt - Error (Red) */
+            .sapMSegBBtn:nth-child(4).sapMSegBBtnSel {
+                background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+                color: #ffffff !important;
+                border-color: transparent !important;
+            }
+
+            /* Large, easy-to-click defect buttons with dynamic feel */
+            .defectButton {
+                height: 60px !important;
+            }
+            
+            .defectButton .sapMBtnInner {
+                height: 60px !important;
+                line-height: 58px !important;
+                font-size: 1.15rem !important;
+                font-weight: 600 !important;
+                border-radius: 12px !important;
+                background: #ffffff !important;
+                border: 1px solid rgba(226, 232, 240, 0.8) !important;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
+                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                color: #475569 !important;
+            }
+
+            .defectButton .sapMBtnInner:hover {
+                background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important;
+                border-color: transparent !important;
+                color: #ffffff !important;
+                transform: translateY(-3px) !important;
+                box-shadow: 0 12px 20px -8px rgba(79, 70, 229, 0.45) !important;
+            }
+
+            .defectButton .sapMBtnInner:active {
+                transform: translateY(1px) !important;
+                box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2) !important;
+            }
+
+            /* Custom Table glassmorphic look */
+            .customTable {
+                background: rgba(255, 255, 255, 0.7) !important;
+                backdrop-filter: blur(16px) !important;
+                -webkit-backdrop-filter: blur(16px) !important;
+                border: 1px solid rgba(255, 255, 255, 0.8) !important;
+                box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05) !important;
+                border-radius: 12px !important;
+                overflow: hidden !important;
+            }
+
+            .customTable .sapMListHdr {
+                background: transparent !important;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+                padding-top: 12px !important;
+                padding-bottom: 12px !important;
+            }
+
+            .customTable .sapMListHdrText {
+                color: #4f46e5 !important;
+                font-weight: 700 !important;
+                font-size: 1.1rem !important;
+            }
+
+            .customTable .sapMTableHeaderCell {
+                background: rgba(248, 250, 252, 0.7) !important;
+                border-bottom: 2px solid rgba(0, 0, 0, 0.05) !important;
+            }
+
+            .customTable .sapMTableHeaderCell .sapMText {
+                font-weight: 700 !important;
+                color: #1e293b !important;
+            }
+
+            .customTable .sapMListShowSeparator > li:hover {
+                background-color: rgba(241, 245, 249, 0.8) !important;
+                transition: background-color 0.2s ease !important;
+            }
+
+            /* Points severity status tags */
+            .pointsTag {
+                display: inline-block !important;
+                padding: 4px 10px !important;
+                border-radius: 20px !important;
+                text-align: center !important;
+                width: 70px !important;
+            }
+
+            .pointsTag .sapMObjStatusText {
+                font-weight: 700 !important;
+                font-size: 0.85rem !important;
+            }
+
+            .pointsTag.sapMObjStatusSuccess {
+                background-color: #dcfce7 !important;
+                color: #15803d !important;
+                border: 1px solid #bbf7d0 !important;
+            }
+
+            .pointsTag.sapMObjStatusNone {
+                background-color: #fef9c3 !important;
+                color: #a16207 !important;
+                border: 1px solid #fef08a !important;
+            }
+
+            .pointsTag.sapMObjStatusWarning {
+                background-color: #ffedd5 !important;
+                color: #c2410c !important;
+                border: 1px solid #fed7aa !important;
+            }
+
+            .pointsTag.sapMObjStatusError {
+                background-color: #ffe4e6 !important;
+                color: #be123c !important;
+                border: 1px solid #fecdd3 !important;
+            }
+
+            /* Delete Button floating style */
+            .deleteButton .sapMBtnInner {
+                background-color: rgba(254, 226, 226, 0.6) !important;
+                border-color: rgba(252, 165, 165, 0.5) !important;
+                color: #dc2626 !important;
+                border-radius: 8px !important;
+                transition: all 0.2s ease !important;
+            }
+            .deleteButton:hover .sapMBtnInner {
+                background-color: #dc2626 !important;
+                border-color: transparent !important;
+                color: #ffffff !important;
+                box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3) !important;
+            }
+
+            /* Submit Button premium glow */
+            .sapMBtn.submitButton > .sapMBtnHoverable {
+                background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important;
+                border: none !important;
+                box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35) !important;
+                border-radius: 8px !important;
+                transition: all 0.25s ease !important;
+            }
+
+            .sapMBtn.submitButton > .sapMBtnHoverable:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 8px 20px rgba(79, 70, 229, 0.5) !important;
+            }
+
+            /* Custom header style */
+            .sapMPageHeader {
+                background: rgba(255, 255, 255, 0.8) !important;
+                backdrop-filter: blur(8px) !important;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+            }
+        </style>
+
+        <script>
+
+            var oView = new sap.ui.view({
+                viewName: "mickey.view.Main",
+                type: "XML",
+                id: "idXMLView"
+            });
+
+            oView.placeAt("content2");
+        </script>
+
+    </head>
+    <body class="sapUiBody">
+        <div id="content2"></div>
+    </body>
+</html>

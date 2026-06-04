@@ -1,0 +1,148 @@
+<minion:View
+    xmlns:minion="sap.ui.core.mvc"
+    xmlns="sap.m"
+    controllerName="mickey.controller.Main"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+>
+    <Page title="4-Point Fabric Defect Capturing" showHeader="true" showFooter="true" class="sapUiContentPadding">
+        <content>
+            <VBox class="sapUiResponsiveMargin">
+                <Panel headerText="Selection Screen" class="customPanel sapUiTinyMarginBottom">
+                    <f:SimpleForm
+                        editable="true"
+                        layout="ResponsiveGridLayout"
+                        labelSpanL="4"
+                        labelSpanM="4"
+                        emptySpanL="0"
+                        emptySpanM="0"
+                        columnsL="2"
+                        columnsM="2"
+                    >
+                        <f:content>
+                            <core:Title text="Order &amp; Process Info" />
+                            <Label text="Production Order" design="Bold" />
+                            <ComboBox id="prodOrderSelect"
+                                      selectedKey="{/selection/productionOrder}"
+                                      items="{/productionOrders}"
+                                      change=".onProductionOrderChange"
+                                      placeholder="Select Production Order"
+                                      width="100%">
+                                <core:Item key="{key}" text="{text}" />
+                            </ComboBox>
+
+                            <Label text="Operation" design="Bold" />
+                            <ComboBox id="operationSelect"
+                                      selectedKey="{/selection/operation}"
+                                      items="{/operations}"
+                                      placeholder="Select Operation"
+                                      width="100%">
+                                <core:Item key="{key}" text="{text}" />
+                            </ComboBox>
+
+                            <Label text="Operator" design="Bold" />
+                            <Input id="operatorInput"
+                                   value="{/selection/operator}"
+                                   editable="false"
+                                   placeholder="Operator Name (Auto Fill)"
+                                   width="100%" />
+
+                            <core:Title text="Process &amp; Measurement" />
+                            <Label text="Process" design="Bold" />
+                            <Select id="processSelect"
+                                    selectedKey="{/selection/process}"
+                                    items="{/processes}"
+                                    change=".onProcessChange"
+                                    width="100%">
+                                <core:Item key="{key}" text="{text}" />
+                            </Select>
+
+                            <Label text="Meter Reading" design="Bold" />
+                            <Input id="meterReadingInput"
+                                   value="{/selection/meterReading}"
+                                   placeholder="Enter Current Meter Reading"
+                                   type="Number"
+                                   class="yellowHighlight"
+                                   submit=".onMeterReadingSubmit"
+                                   width="100%" />
+
+                            <Label text="Defect Points" design="Bold" />
+                            <SegmentedButton selectedKey="{/selection/points}">
+                                <items>
+                                    <SegmentedButtonItem key="1" text="1 Pt" />
+                                    <SegmentedButtonItem key="2" text="2 Pt" />
+                                    <SegmentedButtonItem key="3" text="3 Pt" />
+                                    <SegmentedButtonItem key="4" text="4 Pt" />
+                                </items>
+                            </SegmentedButton>
+                        </f:content>
+                    </f:SimpleForm>
+                </Panel>
+
+                <Panel headerText="Defect Quick-Capture (Click button to record)" class="customPanel sapUiTinyMarginBottom">
+                    <l:Grid defaultSpan="XL6 L6 M6 S12" content="{/currentDefects}" class="sapUiTinyMarginTop">
+                        <Button text="{name}"
+                                press=".onDefectClick"
+                                type="Default"
+                                class="defectButton sapUiTinyMarginBottom"
+                                width="100%" />
+                    </l:Grid>
+                </Panel>
+
+                <Table id="defectsTable" items="{/capturedDefects}" headerText="Captured Defects Log" noDataText="No defects captured yet. Click on the buttons above to record a defect." class="customTable">
+                    <columns>
+                        <Column>
+                            <Text text="Defect Name" />
+                        </Column>
+                        <Column width="120px" hAlign="End">
+                            <Text text="Meter Reading" />
+                        </Column>
+                        <Column width="100px" hAlign="Center">
+                            <Text text="Points" />
+                        </Column>
+                        <Column>
+                            <Text text="Production Order" />
+                        </Column>
+                        <Column>
+                            <Text text="Operation" />
+                        </Column>
+                        <Column>
+                            <Text text="Process" />
+                        </Column>
+                        <Column>
+                            <Text text="Operator" />
+                        </Column>
+                        <Column width="100px" hAlign="Center">
+                            <Text text="Time" />
+                        </Column>
+                        <Column width="80px" hAlign="Center">
+                            <Text text="Delete" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier title="{defectName}" />
+                                <Text text="{meterReading} m" />
+                                <ObjectStatus text="{points} Pt" state="{= ${points} === '1' ? 'Success' : (${points} === '2' ? 'None' : (${points} === '3' ? 'Warning' : 'Error')) }" class="pointsTag" />
+                                <Text text="{productionOrder}" />
+                                <Text text="{operation}" />
+                                <Text text="{process}" />
+                                <Text text="{operator}" />
+                                <Text text="{timestamp}" />
+                                <Button icon="sap-icon://delete" press=".onDeleteDefect" class="deleteButton" />
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </content>
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button text="Submit Inspection Log" type="Accept" icon="sap-icon://accept" press=".onFinalSubmit" class="submitButton" />
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</minion:View>
